@@ -163,6 +163,8 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/arm_sender.py
+  scripts/home.py
+  scripts/arm_redmove.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
