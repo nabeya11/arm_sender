@@ -2,12 +2,12 @@
 
 import rospy
 from arm_sender.OpenManipulator import OpenManipulator
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Point
 from sensor_msgs.msg import JointState
 
 class Arm_Follow:
     def __init__(self):
-        self.object_sub = rospy.Subscriber('object_odom', Twist, self.callback)
+        self.object_sub = rospy.Subscriber('object_odom', Point, self.callback)
         self.joint_sub = rospy.Subscriber('joint_states', JointState, self.joint_callback)
         self.arm = OpenManipulator()
         self.joint_states=[]
@@ -16,14 +16,14 @@ class Arm_Follow:
     def joint_callback(self, data):
         self.joint_states = data.position
     def callback(self, data):
-        rospy.loginfo(data.linear)
+        rospy.loginfo(data)
 
         kz = 0.0005
         ky = 0.003
         kx = 0.003
-        self.depth = -kz*(data.linear.z - 200)
-        self.pitch = self.joint_states[5] + ky*(data.linear.y - 240)
-        self.yaw   = self.joint_states[2] - kx*(data.linear.x - 320)
+        self.depth = -kz*data.z
+        self.pitch = self.joint_states[5] + ky*data.y
+        self.yaw   = self.joint_states[2] - kx*data.x
 
         self.yaw = max(self.yaw, -1.57)
         self.yaw = min(self.yaw, 1.57)
